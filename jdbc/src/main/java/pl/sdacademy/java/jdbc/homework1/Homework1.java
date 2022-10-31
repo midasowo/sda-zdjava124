@@ -31,10 +31,17 @@ public class Homework1 {
             return Collections.emptyList();
         }
         try (final Connection connection = DriverManager.getConnection(jdbcUrl)) {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT first_name, last_name FROM actor WHERE" +
-                    " UPPER(first_name) LIKE UPPER(?) OR UPPER(last_name) LIKE UPPER(?) ORDER BY last_name, first_name;");
-            preparedStatement.setString(1, "%" + query + "%");
-            preparedStatement.setString(2, "%" + query + "%");
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT DISTINCT actor.first_name, actor.last_name FROM actor\n" +
+                    "JOIN film_actor ON actor.actor_id = film_actor.actor_id\n" +
+                    "JOIN film ON film_actor.film_id = film.film_id\n" +
+                    "WHERE UPPER(actor.first_name) LIKE UPPER(?) \n" +
+                    "OR UPPER(actor.last_name) LIKE UPPER(?)\n" +
+                    "OR UPPER(film.title) LIKE UPPER(?)\n" +
+                    "ORDER BY last_name, first_name;");
+            String asking = "%" + query + "%";
+            preparedStatement.setString(1, asking);
+            preparedStatement.setString(2, asking);
+            preparedStatement.setString(3, asking);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()) {
