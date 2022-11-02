@@ -38,10 +38,10 @@ public class Homework1 {
                     "OR UPPER(actor.last_name) LIKE UPPER(?)\n" +
                     "OR UPPER(film.title) LIKE UPPER(?)\n" +
                     "ORDER BY last_name, first_name;");
-            String asking = "%" + query + "%";
-            preparedStatement.setString(1, asking);
-            preparedStatement.setString(2, asking);
-            preparedStatement.setString(3, asking);
+            String pattern = "%" + query + "%";
+            preparedStatement.setString(1, pattern);
+            preparedStatement.setString(2, pattern);
+            preparedStatement.setString(3, pattern);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()) {
