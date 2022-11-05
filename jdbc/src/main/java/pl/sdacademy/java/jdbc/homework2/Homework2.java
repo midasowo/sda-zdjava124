@@ -36,7 +36,7 @@ public class Homework2 {
         }
         try (SqlSession session = sqlSessionFactory.openSession()) {
             ActorMapper actorMapper = session.getMapper(ActorMapper.class);
-            return actorMapper.getActors(query);
+            return actorMapper.getActors("%" + query + "%");
         }
     }
 
