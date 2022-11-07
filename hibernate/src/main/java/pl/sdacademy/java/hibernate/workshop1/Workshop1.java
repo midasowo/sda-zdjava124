@@ -1,5 +1,8 @@
 package pl.sdacademy.java.hibernate.workshop1;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import pl.sdacademy.java.hibernate.common.world.Country;
 import pl.sdacademy.java.hibernate.utils.ApplicationPropertiesProvider;
 
@@ -22,6 +25,16 @@ public class Workshop1 {
     }
 
     public static Country loadCountryByCode(Properties properties, String code) {
-        throw new UnsupportedOperationException("TODO");
+        Country country;
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("WorldPU", properties);
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            country = entityManager.find(Country.class, code);
+        }
+        finally {
+            entityManager.close();
+            entityManagerFactory.close();
+        }
+        return country;
     }
 }
