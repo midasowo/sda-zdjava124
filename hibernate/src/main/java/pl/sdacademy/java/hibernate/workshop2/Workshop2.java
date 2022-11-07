@@ -1,5 +1,9 @@
 package pl.sdacademy.java.hibernate.workshop2;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+import jakarta.persistence.TypedQuery;
 import pl.sdacademy.java.hibernate.common.world.Country;
 import pl.sdacademy.java.hibernate.utils.ApplicationPropertiesProvider;
 
@@ -21,6 +25,18 @@ public class Workshop2 {
     }
 
     public static List<Country> loadCountries(Properties properties) {
-        throw new UnsupportedOperationException("TODO");
+        List<Country> countries;
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("WorldPU", properties);
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            TypedQuery<Country> typedQuery = entityManager.createQuery("""
+                    SELECT c FROM Country c
+                    WHERE c.continent = 'Europe' ORDER BY c.name
+                    """, Country.class);
+            countries = typedQuery.getResultList();
+        } finally {
+            entityManagerFactory.close();
+        }
+        return countries;
     }
 }
