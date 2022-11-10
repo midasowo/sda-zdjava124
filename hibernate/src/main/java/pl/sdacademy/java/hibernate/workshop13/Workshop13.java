@@ -1,5 +1,8 @@
 package pl.sdacademy.java.hibernate.workshop13;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import pl.sdacademy.java.hibernate.common.sakila.Country;
 import pl.sdacademy.java.hibernate.utils.ApplicationPropertiesProvider;
 
@@ -35,6 +38,24 @@ public class Workshop13 {
     }
 
     public static Country mergeCountry(Properties properties, Country country) {
-        throw new UnsupportedOperationException("TODO");
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("SakilaPU", properties);
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+
+        try {
+            entityManager.getTransaction().begin();
+
+            var managedCountry = entityManager.merge(country);
+
+            entityManager.getTransaction().commit();
+
+            return managedCountry;
+        }
+        catch(Exception e) {
+            entityManager.getTransaction().rollback();
+            throw new RuntimeException(e);
+        }
+        finally {
+            entityManagerFactory.close();
+        }
     }
 }
