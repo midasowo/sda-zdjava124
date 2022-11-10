@@ -13,7 +13,7 @@ public class City {
 
     @Column(name = "city")
     private String name;
-    @ManyToOne
+    @ManyToOne(cascade = { CascadeType.PERSIST }) //w {} jest tablica - wartości może być więcej
     @JoinColumn(name = "country_id")
     private Country country;
     @OneToMany(mappedBy = "city")

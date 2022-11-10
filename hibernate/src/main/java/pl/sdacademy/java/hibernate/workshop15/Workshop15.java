@@ -1,6 +1,10 @@
 package pl.sdacademy.java.hibernate.workshop15;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import pl.sdacademy.java.hibernate.common.sakila.City;
+import pl.sdacademy.java.hibernate.common.sakila.Country;
 import pl.sdacademy.java.hibernate.utils.ApplicationPropertiesProvider;
 
 import java.util.Properties;
@@ -33,6 +37,31 @@ public class Workshop15 {
     }
 
     public static City createCity(Properties properties, String countryName, String cityName) {
-        throw new UnsupportedOperationException("TODO");
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("SakilaPU", properties);
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+
+        try {
+            final Country country = new Country();
+            country.setName(countryName);
+
+            final City city = new City();
+            city.setName(cityName);
+            city.setCountry(country);
+
+            entityManager.getTransaction().begin();
+
+            entityManager.persist(city);
+
+            entityManager.getTransaction().commit();
+
+            return city;
+        }
+        catch(Exception e) {
+            entityManager.getTransaction().rollback();
+            throw new RuntimeException(e);
+        }
+        finally {
+            entityManagerFactory.close();
+        }
     }
 }
