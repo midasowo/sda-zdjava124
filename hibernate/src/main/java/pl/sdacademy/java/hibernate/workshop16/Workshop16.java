@@ -1,5 +1,10 @@
 package pl.sdacademy.java.hibernate.workshop16;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+import pl.sdacademy.java.hibernate.common.sakila.City;
+import pl.sdacademy.java.hibernate.common.sakila.Country;
 import pl.sdacademy.java.hibernate.utils.ApplicationPropertiesProvider;
 
 import java.util.Properties;
@@ -19,6 +24,31 @@ public class Workshop16 {
     }
 
     public static int renameCountry(Properties properties, long countryId, String newName) {
-        throw new UnsupportedOperationException("TODO");
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("SakilaPU", properties);
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+
+        try {
+            entityManager.getTransaction().begin();
+
+            final var query = entityManager.createQuery(
+                """
+                    update Country country set country.name = :newName
+                    where country.countryId = :countryId
+                """
+            );
+
+             query.setParameter("newName", newName);
+             query.setParameter("countryId", countryId);
+             int result = query.executeUpdate();
+
+            entityManager.getTransaction().commit();
+
+            return result;
+        } catch (Exception e) {
+            entityManager.getTransaction().rollback();
+            throw new RuntimeException(e);
+        } finally {
+            entityManagerFactory.close();
+        }
     }
 }
