@@ -8,7 +8,9 @@ import java.util.List;
 public class City {
     @Id
     @Column(name = "city_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cityId;
+
     @Column(name = "city")
     private String name;
     @ManyToOne
